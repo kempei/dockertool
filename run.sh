@@ -4,8 +4,6 @@ IMAGE_NAME=$1
 shift
 
 CURDIR=$(pwd)
-cd `dirname $0`
-
 IMAGEDIR=$(pwd)/${IMAGE_NAME}
 
 if [ "${IMAGE_NAME}" = "" ]; then
@@ -13,8 +11,13 @@ if [ "${IMAGE_NAME}" = "" ]; then
     exit 1
 fi
 
-if [ ! -e ${IMAGEDIR} ]; then
+if [ ! -e ${CURDIR}/${IMAGEDIR} ]; then
     echo "directory '${CURDIR}/${IMAGE_NAME}' is not exists."
+    exit 1
+fi
+
+if [ ! -f ${CURDIR}/setenv_${IMAGE_NAME} ]; then
+    echo "missing ${CURDIR}/setenv_${IMAGE_NAME} file for environment variables"
     exit 1
 fi
 
@@ -28,11 +31,6 @@ if [ "${AWS_REGION}" = "" ]; then
     exit 1
 fi
 
-if [ ! -f ${CURDIR}/setenv_${IMAGE_NAME} ]; then
-    echo "missing ${CURDIR}/setenv_${IMAGE_NAME} file for environment variables"
-    exit 1
-fi
-
 export DOCKERENV="
 -e AWS_ACCESS_KEY_ID=$(    aws configure get aws_access_key_id) \
 -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
@@ -40,10 +38,10 @@ export DOCKERENV="
 -e LOG_LEVEL=10 \
 "
 
-cd ${IMAGEDIR}
+cd ${CURDIR}/${IMAGEDIR}
 
 echo "[dockerrun] setting env..."
-. ./setenv_from_aws
+. ${CURDIR}/setenv_from_aws
 
 echo "[dockerrun] running..."
 docker run --rm -it \
