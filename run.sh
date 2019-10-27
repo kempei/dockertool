@@ -28,8 +28,8 @@ if [ "${AWS_REGION}" = "" ]; then
     exit 1
 fi
 
-if [ ! -f ./setenv_from_aws ]; then
-    echo "missing setenv_from_aws file for environment variables"
+if [ ! -f ${CURDIR}/setenv_${IMAGE_NAME} ]; then
+    echo "missing ${CURDIR}/setenv_${IMAGE_NAME} file for environment variables"
     exit 1
 fi
 
