@@ -4,20 +4,15 @@ IMAGE_NAME=$1
 shift
 
 CURDIR=$(pwd)
-IMAGEDIR=${CURDIR}/${IMAGE_NAME}
+IMAGE_DIR=${CURDIR}/${IMAGE_NAME}
 
 if [ "${IMAGE_NAME}" = "" ]; then
     echo "Usage: dockertool/run.sh <IMAGE_NAME>"
     exit 1
 fi
 
-if [ ! -e ${IMAGEDIR} ]; then
+if [ ! -e ${IMAGE_DIR} ]; then
     echo "directory '${IMAGE_DIR}' is not exists."
-    exit 1
-fi
-
-if [ ! -f ${CURDIR}/setenv_${IMAGE_NAME} ]; then
-    echo "missing ${CURDIR}/setenv_${IMAGE_NAME} file for environment variables"
     exit 1
 fi
 
@@ -31,6 +26,11 @@ if [ "${AWS_REGION}" = "" ]; then
     exit 1
 fi
 
+if [ ! -f "${CURDIR}/setenv_${IMAGE_NAME}" ]; then
+    echo "${CURDIR}/setenv_${IMAGE_NAME}"
+    exit 1
+fi
+
 export DOCKERENV="
 -e AWS_ACCESS_KEY_ID=$(    aws configure get aws_access_key_id) \
 -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
@@ -38,14 +38,14 @@ export DOCKERENV="
 -e LOG_LEVEL=10 \
 "
 
-cd ${CURDIR}/${IMAGEDIR}
+cd ${IMAGE_DIR}
 
 echo "[dockerrun] setting env..."
-. ${CURDIR}/setenv_from_aws
+. ${CURDIR}/setenv_${IMAGE_NAME}
 
 echo "[dockerrun] running..."
 docker run --rm -it \
     ${DOCKERENV} \
-    -v ${CURDIR}:${IMAGEDIR} \
-    -w ${IMAGEDIR} \
+    -v ${CURDIR}:${IMAGE_DIR} \
+    -w ${IMAGE_DIR} \
     ${IMAGE_NAME} "$@"

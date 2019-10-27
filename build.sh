@@ -4,19 +4,21 @@ IMAGE_NAME=$1
 shift
 
 CURDIR=$(pwd)
-IMAGEDIR=${CURDIR}/${IMAGE_NAME}
+IMAGE_DIR=${CURDIR}/${IMAGE_NAME}
+
+echo ${IMAGE_NAME}
 
 if [ "${IMAGE_NAME}" = "" ]; then
     echo "Usage: dockertool/build.sh <IMAGE_NAME>"
     exit 1
 fi
 
-if [ ! -e ${CURDIR}/${IMAGEDIR} ]; then
+if [ ! -e ${IMAGE_DIR} ]; then
     echo "directory '${IMAGE_DIR}' is not exists."
     exit 1
 fi
 
-cd ${CURDIR}/${IMAGEDIR}
+cd ${IMAGE_DIR}
 
 echo "[dockerbuild] building..."
 docker build -t ${IMAGE_NAME} .
