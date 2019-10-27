@@ -4,15 +4,15 @@ IMAGE_NAME=$1
 shift
 
 CURDIR=$(pwd)
-IMAGEDIR=$(pwd)/${IMAGE_NAME}
+IMAGEDIR=${CURDIR}/${IMAGE_NAME}
 
 if [ "${IMAGE_NAME}" = "" ]; then
     echo "Usage: dockertool/run.sh <IMAGE_NAME>"
     exit 1
 fi
 
-if [ ! -e ${CURDIR}/${IMAGEDIR} ]; then
-    echo "directory '${CURDIR}/${IMAGE_NAME}' is not exists."
+if [ ! -e ${IMAGEDIR} ]; then
+    echo "directory '${IMAGE_DIR}' is not exists."
     exit 1
 fi
 

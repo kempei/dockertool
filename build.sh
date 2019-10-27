@@ -12,7 +12,7 @@ if [ "${IMAGE_NAME}" = "" ]; then
 fi
 
 if [ ! -e ${CURDIR}/${IMAGEDIR} ]; then
-    echo "directory '${CURDIR}/${IMAGE_NAME}' is not exists."
+    echo "directory '${IMAGE_DIR}' is not exists."
     exit 1
 fi
 
